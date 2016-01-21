@@ -1,0 +1,25 @@
+Package: xVA
+Type: Package
+Title: Calculates Credit Risk Valuation Adjustments
+Version: 0.8
+Date: 2016-01-17
+Author: Tasos Grivas
+Maintainer: Tasos Grivas <tasos@openriskcalculator.com>
+Description: Calculates a number of valuation adjustments including CVA, DVA,
+    FBA, FCA, MVA and KVA. A two-way margin agreement has been implemented. For
+    the KVA calculation three regulatory frameworks are supported: CEM, SA-CCR and
+    IMM. The probability of default is implied through the credit spreads curve.
+    Currently, only IRSwaps are supported.
+License: GPL-3
+Imports: methods, SACCR
+URL: www.openriskcalculator.com
+LazyData: TRUE
+Collate: 'CSAb.R' 'CalcNGR.R' 'CalcPD.R' 'CalcSimulatedExposure.R'
+        'CalcVA.R' 'Curve.R' 'GenerateTimeGrid.R' 'HashTable.R'
+        'Trade.R' 'IRD.R' 'calcCVACapital.R' 'calcDefCapital.R'
+        'calcEAD.R' 'calcEffectiveMaturity.R' 'calcKVA.R'
+        'xVACalculator.R' 'xVACalculatorExample.R'
+NeedsCompilation: no
+Packaged: 2016-01-20 07:53:41 UTC; tasos
+Repository: CRAN
+Date/Publication: 2016-01-20 09:24:58
