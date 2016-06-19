@@ -9,4 +9,4 @@ For the KVA calculation three regulatory frameworks are supported: CEM, SA-CCR a
 
 The probability of default is implied through the credit spreads curve. Currently, only IRSwaps are supported.
 
-You can email me for any issue/question at tasos@openriskcalculator.com
+If you want to become a contributor to the project or use this code for commercial purposes or for any other queries please contact us at info@openriskcalculator.com or visit our website www.openriskcalculator.com
