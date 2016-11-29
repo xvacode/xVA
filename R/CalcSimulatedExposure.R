@@ -34,7 +34,7 @@ CalcSimulatedExposure = function(discount_factors, time_points, spot_curve, col,
 for(index in 1:num_of_trades)
 {
 maturity  = trades[[index]]$Ei
-swap_rate = trades[[index]]$swap_rate
+swap_rate = trades[[index]]$pay_leg_rate
 BuySell   = ifelse(trades[[index]]$BuySell=='Buy',1,-1)
 
   time_points_temp   = time_points[time_points<=maturity]

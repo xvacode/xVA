@@ -30,14 +30,15 @@ calcEAD = function(trades, framework, col,EEE,time_points)
   {
     requireNamespace("SACCR")
 
-    current_collateral = col$IM_cpty
+    current_collateral = Trading::Collateral(ID="col_1",csa_id="csa_1",Amount=0.03,type="VariationMargin")
     MF = col$CalcMF()
     # calculating the add-on
-    Addon_Aggregate <- SACCR::CalcAddon(trades, MF)
+    trades_tree = SACCR::CreateTradeGraph(trades)
+    trades_tree <- SACCR::CalcAddon(trades_tree, MF)
     # calculating the RC and the V-c amount
-    rc_values <- SACCR::CalcRC(trades, col, current_collateral)
+    rc_values <- SACCR::CalcRC(trades, col, list(current_collateral))
     # calculating the PFE after multiplying the addon with a factor if V-C<0
-    PFE <- SACCR::CalcPFE(rc_values$V_C, Addon_Aggregate)
+    PFE <- SACCR::CalcPFE(rc_values$V_C, trades_tree$addon)
     # calculating the Exposure-at-Default
     EAD <- SACCR::CalcEAD(rc_values$RC,PFE)
 

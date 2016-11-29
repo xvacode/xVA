@@ -1,25 +1,26 @@
 Package: xVA
 Type: Package
 Title: Calculates Credit Risk Valuation Adjustments
-Version: 0.8
-Date: 2016-01-17
+Version: 0.8.1
+Date: 2016-11-19
 Author: Tasos Grivas
 Maintainer: Tasos Grivas <tasos@openriskcalculator.com>
 Description: Calculates a number of valuation adjustments including CVA, DVA,
     FBA, FCA, MVA and KVA. A two-way margin agreement has been implemented. For
     the KVA calculation three regulatory frameworks are supported: CEM, SA-CCR and
     IMM. The probability of default is implied through the credit spreads curve.
-    Currently, only IRSwaps are supported.
+    Currently, only IRSwaps are supported. For more information, you can check
+    one of the books regarding xVA: <http://www.cvacentral.com/books/credit-value-adjustment>.
 License: GPL-3
-Imports: methods, SACCR
+Imports: methods, SACCR, Trading
 URL: www.openriskcalculator.com
 LazyData: TRUE
-Collate: 'CSAb.R' 'CalcNGR.R' 'CalcPD.R' 'CalcSimulatedExposure.R'
-        'CalcVA.R' 'Curve.R' 'GenerateTimeGrid.R' 'HashTable.R'
-        'Trade.R' 'IRD.R' 'calcCVACapital.R' 'calcDefCapital.R'
+Collate: 'CalcNGR.R' 'CalcPD.R' 'CalcSimulatedExposure.R' 'CalcVA.R'
+        'GenerateTimeGrid.R' 'calcCVACapital.R' 'calcDefCapital.R'
         'calcEAD.R' 'calcEffectiveMaturity.R' 'calcKVA.R'
         'xVACalculator.R' 'xVACalculatorExample.R'
 NeedsCompilation: no
-Packaged: 2016-01-20 07:53:41 UTC; tasos
+RoxygenNote: 5.0.1
+Packaged: 2016-11-26 16:23:55 UTC; tasos
 Repository: CRAN
-Date/Publication: 2016-01-20 09:24:58
+Date/Publication: 2016-11-26 17:37:01
