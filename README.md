@@ -5,7 +5,8 @@ Calculates a number of valuation adjustments including CVA, DVA, FBA, FCA, MVA a
 
 A two-way margin agreement has been implemented. 
 
-For the KVA calculation three regulatory frameworks are supported: CEM, SA-CCR and IMM. 
+For the KVA calculation three regulatory frameworks are supported: CEM, (simplified) SA-CCR, OEM
+	and IMM
 
 The probability of default is implied through the credit spreads curve. Currently, only IRSwaps are supported.
 
