@@ -4,8 +4,14 @@
 \alias{CalcSimulatedExposure}
 \title{Calculated the Simulated Exposure Profile}
 \usage{
-CalcSimulatedExposure(discount_factors, time_points, spot_curve, col, trades,
-  sim_data)
+CalcSimulatedExposure(
+  discount_factors,
+  time_points,
+  spot_curve,
+  CSA,
+  trades,
+  sim_data
+)
 }
 \arguments{
 \item{discount_factors}{The discount curve derived from the spot curve}
@@ -14,7 +20,7 @@ CalcSimulatedExposure(discount_factors, time_points, spot_curve, col, trades,
 
 \item{spot_curve}{The curve derived from interpolating the market spot rates}
 
-\item{col}{The margin agreement}
+\item{CSA}{The margin agreement}
 
 \item{trades}{The list of the trade objects}
 
@@ -30,4 +36,3 @@ one after taking into account the marging agreement and one assuming that there 
 \author{
 Tasos Grivas <tasos@openriskcalculator.com>
 }
-

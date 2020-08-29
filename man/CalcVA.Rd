@@ -24,4 +24,3 @@ Calculates the Valuation Adjustment based on the exposure, the probability-of-de
 \author{
 Tasos Grivas <tasos@openriskcalculator.com>
 }
-

@@ -4,13 +4,26 @@
 \alias{xVACalculator}
 \title{Calculates the xVA values}
 \usage{
-xVACalculator(trades, col, sim_data, reg_data, credit_curve_PO,
-  credit_curve_cpty, funding_curve, spot_rates, cpty_LGD, PO_LGD)
+xVACalculator(
+  trades,
+  CSA,
+  collateral,
+  sim_data,
+  reg_data,
+  credit_curve_PO,
+  credit_curve_cpty,
+  funding_curve,
+  spot_rates,
+  cpty_LGD,
+  PO_LGD
+)
 }
 \arguments{
 \item{trades}{The full list of the Trade Objects}
 
-\item{col}{The margin agreement with the counterparty}
+\item{CSA}{The margin agreement with the counterparty}
+
+\item{collateral}{The amount of collaterals currently exchanged with the counterparty}
 
 \item{sim_data}{A list containing data related to the calculation of simulated exposures (for example the model parameters and the number of simulations)}
 
@@ -34,10 +47,9 @@ A list containing the xVA values
 \description{
 Calculates the xVA values (CVA, DVA, FVA, FBA, MVA, KVA)
 }
-\author{
-Tasos Grivas <tasos@openriskcalculator.com>
-}
 \references{
 Gregory J., The xVA Challenge, 2015, Wiley
 }
-
+\author{
+Tasos Grivas <tasos@openriskcalculator.com>
+}

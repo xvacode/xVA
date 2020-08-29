@@ -3,7 +3,7 @@
 #' @title Calculated the Simulated Exposure Profile
 #' @param discount_factors The discount curve derived from the spot curve
 #' @param spot_curve The curve derived from interpolating the market spot rates
-#' @param col The margin agreement
+#' @param CSA The margin agreement
 #' @param trades The list of the trade objects
 #' @param time_points The timepoints that the analysis is performed on
 #' @param sim_data A list containing simulation-related data (model parameters and number of simulation)
@@ -12,7 +12,7 @@
 #' @author Tasos Grivas <tasos@@openriskcalculator.com>
 #'
 
-CalcSimulatedExposure = function(discount_factors, time_points, spot_curve, col, trades, sim_data)
+CalcSimulatedExposure = function(discount_factors, time_points, spot_curve, CSA, trades, sim_data)
 {
   num_of_points = length(time_points)
   num_of_trades = length(trades)
@@ -67,7 +67,7 @@ BuySell   = ifelse(trades[[index]]$BuySell=='Buy',1,-1)
     Swap_MtM = (Floating_leg - Fixed_leg)*BuySell
 
     Swap_MtMs[j,1:num_of_points_temp]      = Swap_MtMs[j,1:num_of_points_temp]      + Swap_MtM
-    Swap_MtMs_coll[j,1:num_of_points_temp] = Swap_MtMs_coll[j,1:num_of_points_temp] + col$ApplyThres(Swap_MtM)
+    Swap_MtMs_coll[j,1:num_of_points_temp] = Swap_MtMs_coll[j,1:num_of_points_temp] + CSA$ApplyThres(Swap_MtM)
   }
   trades[[index]]$MtM = Swap_MtMs[1,1]
 }

@@ -24,4 +24,3 @@ Calculates the effective maturity based on the specified regulatory framework
 \author{
 Tasos Grivas <tasos@openriskcalculator.com>
 }
-

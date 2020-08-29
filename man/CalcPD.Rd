@@ -22,4 +22,3 @@ Calculates the probablity of the default on specific time points by using the sp
 \author{
 Tasos Grivas <tasos@openriskcalculator.com>
 }
-

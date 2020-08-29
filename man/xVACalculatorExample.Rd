@@ -22,4 +22,3 @@ xVACalculatorExample()
 \author{
 Tasos Grivas <tasos@openriskcalculator.com>
 }
-

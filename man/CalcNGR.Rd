@@ -18,4 +18,3 @@ Calculates the Net/Gross ratio used under the CEM regulatory framework
 \author{
 Tasos Grivas <tasos@openriskcalculator.com>
 }
-

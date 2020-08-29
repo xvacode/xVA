@@ -24,4 +24,3 @@ Calculates the CVA capital charge based on the standardized approach
 \author{
 Tasos Grivas <tasos@openriskcalculator.com>
 }
-

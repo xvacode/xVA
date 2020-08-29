@@ -4,12 +4,14 @@
 \alias{calcKVA}
 \title{Calculates the Capital Valuation Adjustment (KVA)}
 \usage{
-calcKVA(exposure_profile, col, trades, reg_data, time_points)
+calcKVA(exposure_profile, CSA, collateral, trades, reg_data, time_points)
 }
 \arguments{
 \item{exposure_profile}{The exposure profile list containing the EE, EEE etc}
 
-\item{col}{The margin agreement with the counterparty}
+\item{CSA}{The margin agreement with the counterparty}
+
+\item{collateral}{The current amount of collaterals currently exchanged with the counterparty}
 
 \item{trades}{The full list of the Trade Objects}
 
@@ -26,4 +28,3 @@ Calculates the capital valuation adjustment by computing the default capital cha
 \author{
 Tasos Grivas <tasos@openriskcalculator.com>
 }
-

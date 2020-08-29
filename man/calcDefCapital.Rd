@@ -24,4 +24,3 @@ Calculates the default capital charge using the advanced IRB methodology and the
 \author{
 Tasos Grivas <tasos@openriskcalculator.com>
 }
-
