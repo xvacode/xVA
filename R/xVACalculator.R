@@ -48,8 +48,8 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
   xVA$DVA_simulated        = CalcVA(exposure_profile$NEE, discount_factors, PD_PO, PO_LGD)
   if(reg_data$framework=='SACCR')
   {
-    xVA$CVA_SACCR            = 
-    xVA$DVA_SACCR            = 
+    #xVA$CVA_SACCR            = 
+    #xVA$DVA_SACCR            = 
   }
   xVA$FCA        = CalcVA(exposure_profile$EE,  discount_factors, PD_FVA)
   xVA$FBA        = CalcVA(exposure_profile$NEE, discount_factors, PD_FVA)
