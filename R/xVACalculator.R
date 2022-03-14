@@ -36,11 +36,21 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
 
   exposure_profile = CalcSimulatedExposure(discount_factors, time_points, spot_curve, CSA, trades, sim_data)
 
+  EAD = calcEADRegulatory(trades, reg_data$framework, reg_data$sa_ccr_simplified, CSA, collateral, exposure_profile$EEE, time_points)
+  
+  effective_maturity = calcEffectiveMaturity(trades, time_points, reg_data$framework, exposure_profile$EE)
+  
+
   xVA = list()
 
   xVA$KVA        = calcKVA(exposure_profile, CSA, collateral, trades, reg_data, time_points)
-  xVA$CVA        = CalcVA(exposure_profile$EE,  discount_factors, PD_cpty, cpty_LGD)
-  xVA$DVA        = CalcVA(exposure_profile$NEE, discount_factors, PD_PO, PO_LGD)
+  xVA$CVA_simulated        = CalcVA(exposure_profile$EE,  discount_factors, PD_cpty, cpty_LGD)
+  xVA$DVA_simulated        = CalcVA(exposure_profile$NEE, discount_factors, PD_PO, PO_LGD)
+  if(reg_data$framework=='SACCR')
+  {
+    xVA$CVA_SACCR            = 
+    xVA$DVA_SACCR            = 
+  }
   xVA$FCA        = CalcVA(exposure_profile$EE,  discount_factors, PD_FVA)
   xVA$FBA        = CalcVA(exposure_profile$NEE, discount_factors, PD_FVA)
   xVA$MVA        = xVA$FCA*2*sqrt(reg_data$mva_days/(250*maturity))*qnorm(reg_data$mva_percentile)/dnorm(0)
