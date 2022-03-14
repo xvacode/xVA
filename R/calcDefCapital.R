@@ -15,9 +15,7 @@ calcDefCapital = function(trades,EAD, reg_data, effective_maturity)
   b = (0.11852-0.05478*log(reg_data$PD))^2
   K = (pnorm((qnorm(reg_data$PD)/sqrt(1-R_stressed) + sqrt(R_stressed/(1-R_stressed))*qnorm(0.999)))-reg_data$PD)*(1+(effective_maturity-2.5)*b)/(1-1.5*b)
 
-  RWA = 12.5*K*EAD
-
-  default_capital_charge = 0.08*reg_data$LGD*RWA
+  default_capital_charge = 0.08*reg_data$LGD*K*EAD
 
   return(default_capital_charge)
 }
