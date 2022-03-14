@@ -64,5 +64,8 @@ calcEADRegulatory = function(trades, framework, sa_ccr_simplified="", CSA, colla
   } else if(framework=='IMM')
   { EAD = 1.4*mean(EEE[time_points<=1])}
 
-  return(EAD)
+  if(framework=='SA-CCR')
+  { return(list(EAD,trades_tree))
+  }else{return(EAD)}
+  
 }
