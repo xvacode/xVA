@@ -12,12 +12,12 @@
 xVACalculatorExample = function()
 {
   # framework can be either "IMM" or "CEM" or "SA-CCR"
-  reg_data = list(framework = "SA-CCR", sa_ccr_simplified = "OEM", PD = 0.002, LGD = 0.6, return_on_capital = 0.15, cpty_rating = 'A', mva_days = 10, mva_percentile = 0.99)
+  reg_data = list(framework = "SA-CCR", sa_ccr_simplified = "", ignore_def_charge = TRUE, PD = 0.002, LGD = 0.6, return_on_capital = 0.15, cpty_rating = 'A', mva_days = 10, mva_percentile = 0.99)
 
   sim_data = list(PFE_Percentile = 0.9, num_of_sims = 250, mean_reversion_a = 0.001, volatility = 0.01)
 
-  cpty_LGD = 0.6
-  PO_LGD  = 0.6
+  cpty_LGD = 0.45
+  PO_LGD  = 0.45
   tr1 = Trading::IRDSwap(external_id ="ext1",Notional=1,Currency="USD",Si=0,Ei=7,BuySell='Sell', pay_leg_rate = 0.05)
   tr2 = Trading::IRDSwap(external_id ="ext2",Notional=1,Currency="USD",Si=0,Ei=10,BuySell='Buy', pay_leg_rate = 0.05)
 
