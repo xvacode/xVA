@@ -11,25 +11,12 @@
 calcEffectiveMaturity = function(trades, time_points, framework, simulated_exposure)
 {
   if(framework == "IMM")
+  {   effective_maturity = max(1,min( sum(simulated_exposure[time_points>1]*diff(time_points[time_points>=1]))/sum(simulated_exposure[time_points<1]*diff(time_points[time_points<=1])),5))
+  }else
   {
-    effective_maturity = max(1,min( sum(simulated_exposure[time_points>1]*diff(time_points[time_points>=1]))/sum(simulated_exposure[time_points<1]*diff(time_points[time_points<=1])),5))
-
-  }
-  else
-  {
-    Notional_vector = as.numeric(lapply(trades, function(x) x$Notional))
-
-    if(framework == "SA-CCR")
-    {
-      adj_notional_vector = as.numeric(lapply(trades, function(x) x$CalcAdjNotional()))
-      effective_maturity = max(1, min(sum(adj_notional_vector)/sum(Notional_vector),5))
-    }
-    else if(framework == "CEM")
-    {
+      Notional_vector = as.numeric(lapply(trades, function(x) x$Notional))     
       Maturity_vector = as.numeric(lapply(trades, function(x) x$Ei))
-      effective_maturity = max(1, min(5,sum(Notional_vector*Maturity_vector)/sum(Notional_vector)))
-    }
+      effective_maturity = max(1, sum(Notional_vector*Maturity_vector)/sum(Notional_vector))
   }
-
   return(effective_maturity)
 }
