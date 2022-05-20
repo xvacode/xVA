@@ -12,15 +12,15 @@
 xVACalculatorExample = function()
 {
   # framework can be either "IMM" or "CEM" or "SA-CCR"
-  reg_data = list(framework = "SA-CCR", sa_ccr_simplified = "OEM", PD = 0.002, LGD = 0.6, return_on_capital = 0.15, cpty_rating = 'A', mva_days = 10, mva_percentile = 0.99)
+  reg_data = list(framework = "SA-CCR", sa_ccr_simplified = "", ignore_def_charge = TRUE, PD_cpty = 0.002, PD_PO = 0.005, PD_FVA = 0.001, LGD = 0.45, return_on_capital = 0.03, cpty_rating = 'A', mva_days = 10, mva_percentile = 0.99)
 
   sim_data = list(PFE_Percentile = 0.9, num_of_sims = 250, mean_reversion_a = 0.001, volatility = 0.01)
 
-  cpty_LGD = 0.6
-  PO_LGD  = 0.6
-  tr1 = Trading::IRDSwap(external_id ="ext1",Notional=1,Currency="USD",Si=0,Ei=7,BuySell='Sell', pay_leg_rate = 0.05)
-  tr2 = Trading::IRDSwap(external_id ="ext2",Notional=1,Currency="USD",Si=0,Ei=10,BuySell='Buy', pay_leg_rate = 0.05)
-
+  cpty_LGD = 0.45
+  PO_LGD  = 0.45
+  tr1 = Trading::IRDSwap(external_id ="ext1",Notional=1,MtM = 0.045, Currency="USD",Si=0,Ei=7,BuySell='Sell', pay_leg_rate = 0.05)
+  tr2 = Trading::IRDSwap(external_id ="ext2",Notional=1,MtM = -0.065, Currency="USD",Si=0,Ei=10,BuySell='Buy', pay_leg_rate = 0.05)
+  no_simulations = FALSE
   trades = list(tr1,tr2)
 
   credit_curve_cpty = Trading::Curve(Tenors=c(1,2,3,4,5,6,10),Rates=c(3,10,20,40,66,99,150))
@@ -34,7 +34,7 @@ xVACalculatorExample = function()
 
   current_collateral = Trading::Collateral(ID="col_1",csa_id="csa_1",Amount=0.03,type="VariationMargin")
   
-  xVA = xVACalculator(trades, csa, current_collateral, sim_data, reg_data, credit_curve_PO, credit_curve_cpty, funding_curve, spot_rates, cpty_LGD, PO_LGD)
+  xVA = xVACalculator(trades, csa, current_collateral, sim_data, reg_data, credit_curve_PO, credit_curve_cpty, funding_curve, spot_rates, cpty_LGD, PO_LGD, no_simulations)
 
   return(xVA)
 

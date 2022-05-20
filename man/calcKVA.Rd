@@ -4,11 +4,18 @@
 \alias{calcKVA}
 \title{Calculates the Capital Valuation Adjustment (KVA)}
 \usage{
-calcKVA(exposure_profile, CSA, collateral, trades, reg_data, time_points)
+calcKVA(
+  CSA,
+  collateral,
+  trades,
+  reg_data,
+  time_points,
+  EAD,
+  effective_maturity,
+  ignore_def_charge = TRUE
+)
 }
 \arguments{
-\item{exposure_profile}{The exposure profile list containing the EE, EEE etc}
-
 \item{CSA}{The margin agreement with the counterparty}
 
 \item{collateral}{The current amount of collaterals currently exchanged with the counterparty}
@@ -18,6 +25,12 @@ calcKVA(exposure_profile, CSA, collateral, trades, reg_data, time_points)
 \item{reg_data}{A list containing data related to the regulatory calculations (for example the 'framework' member variable can be 'IMM','SACCR','CEM')}
 
 \item{time_points}{The timepoints that the analysis is performed on}
+
+\item{EAD}{The Exposure-at-default calculated based on the prescribed framework as appearing in the 'reg_data'}
+
+\item{effective_maturity}{The effective maturity of the trades performed with a specific counterparty}
+
+\item{ignore_def_charge}{if set to true the default capital charge is set to zero}
 }
 \value{
 The capital valuation adjustment (KVA)

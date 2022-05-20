@@ -15,7 +15,8 @@ xVACalculator(
   funding_curve,
   spot_rates,
   cpty_LGD,
-  PO_LGD
+  PO_LGD,
+  no_simulations
 )
 }
 \arguments{
@@ -23,15 +24,15 @@ xVACalculator(
 
 \item{CSA}{The margin agreement with the counterparty}
 
-\item{collateral}{The amount of collaterals currently exchanged with the counterparty}
+\item{collateral}{The amount of collateral currently exchanged with the counterparty}
 
 \item{sim_data}{A list containing data related to the calculation of simulated exposures (for example the model parameters and the number of simulations)}
 
 \item{reg_data}{A list containing data related to the regulatory calculations (for example the 'framework' member variable can be 'IMM','SACCR','CEM')}
 
-\item{credit_curve_PO}{The credit curve of the processing organisation}
+\item{credit_curve_PO}{The credit curve of the processing organization}
 
-\item{credit_curve_cpty}{The credit curve of the processing organisation}
+\item{credit_curve_cpty}{The credit curve of the processing organization}
 
 \item{funding_curve}{A curve containing the credit spread for the funding of the collateral}
 
@@ -39,7 +40,9 @@ xVACalculator(
 
 \item{cpty_LGD}{The loss-given-default of the counterparty}
 
-\item{PO_LGD}{The loss-given-default of the processing organisation}
+\item{PO_LGD}{The loss-given-default of the processing organization}
+
+\item{no_simulations}{if true, no simulated exposure will be generated and the regulatory framework should be SA-CCR}
 }
 \value{
 A list containing the xVA values

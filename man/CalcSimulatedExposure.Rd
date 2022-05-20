@@ -10,7 +10,8 @@ CalcSimulatedExposure(
   spot_curve,
   CSA,
   trades,
-  sim_data
+  sim_data,
+  framework
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ CalcSimulatedExposure(
 \item{trades}{The list of the trade objects}
 
 \item{sim_data}{A list containing simulation-related data (model parameters and number of simulation)}
+
+\item{framework}{regulatory framework can be 'IMM','SACCR','CEM'}
 }
 \value{
 A list containing the exposure profile (both collateralized and uncollateralized)

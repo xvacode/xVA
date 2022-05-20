@@ -56,13 +56,17 @@ calcEADRegulatory = function(trades, framework, sa_ccr_simplified="", CSA, colla
     trades_tree <- SACCR::CalcAddon(trades_tree, MF, simplified = simplified, OEM = OEM)
     # calculating the RC and the V-c amount
     rc_values <- SACCR::CalcRC(trades, CSA, list(collateral), simplified = simplified)
+    trades_tree$`Replacement Cost` = rc_values
     # calculating the PFE after multiplying the addon with a factor if V-C<0
-    PFE <- SACCR::CalcPFE(rc_values$V_C, trades_tree$addon, simplified = simplified)
+    PFE <- SACCR::CalcPFE(rc_values$V_C, Addon_Aggregate = trades_tree$addon, simplified = simplified)
     # calculating the Exposure-at-Default
-    EAD <- SACCR::CalcEAD(rc_values$RC,PFE)
+    EAD <- SACCR::CalcEAD(rc_values$RC, PFE)
 
   } else if(framework=='IMM')
   { EAD = 1.4*mean(EEE[time_points<=1])}
 
-  return(EAD)
+  if(framework=='SA-CCR')
+  { return(list(EAD_Value = EAD, Exposure_Tree = trades_tree))
+  }else{return(EAD)}
+  
 }

@@ -15,7 +15,7 @@ calcCVACapital = function(trades, EAD, cpty_rating, effective_maturity)
 
   df =(1-exp(-0.05*effective_maturity))/(effective_maturity*0.05)
 
-  cva_capital_charge = qnorm(0.99)*sqrt((0.5*reg_weight*EAD*df*effective_maturity)^2+0.75*(reg_weight*EAD*df*effective_maturity)^2)
+  cva_capital_charge = qnorm(0.99)*sqrt(sum(0.5*reg_weight*EAD*df*effective_maturity)^2+0.75*sum((reg_weight*EAD*df*effective_maturity)^2))
 
   return(cva_capital_charge)
 }
