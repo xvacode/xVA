@@ -24,15 +24,15 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
   maturity      <- max(as.numeric(lapply(trades, function(x) x$Ei)))
   time_points    = GenerateTimeGrid(CSA, maturity)
   num_of_points  = length(time_points)
-
+  
   spot_curve     = spot_rates$CalcInterpPoints(time_points)
   cpty_spread    = credit_curve_cpty$CalcInterpPoints(time_points)
   PO_spread      = credit_curve_PO$CalcInterpPoints(time_points)
   funding_spread = funding_curve$CalcInterpPoints(time_points)
   superv         = LoadSupervisoryCVAData()
-
+  
   discount_factors = exp(-time_points*spot_curve)
-
+  
   PD_cpty        = CalcPD(cpty_spread,cpty_LGD,time_points)
   PD_PO          = CalcPD(PO_spread,PO_LGD,time_points)
   PD_FVA         = CalcPD(funding_spread,1,time_points)
@@ -47,10 +47,10 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
   EAD = calcEADRegulatory(trades, reg_data$ccr_framework, reg_data$sa_ccr_simplified, CSA, collateral, exposure_profile$EEE, time_points)
   
   effective_maturity = calcEffectiveMaturity(trades, time_points, reg_data$ccr_framework, exposure_profile$EE)
-
+  
   xVA = list()
+  
 
-  cva_capital_charge = calcCVACapital(trades, EAD, reg_data, superv, effective_maturity)
   
   xVA$KVA        = calcKVA(CSA, collateral, trades, reg_data, time_points, EAD$EAD_Value, effective_maturity, reg_data$ignore_def_charge)
   if(!no_simulations)
@@ -58,6 +58,36 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
     xVA$CVA_simulated        = CalcVA(exposure_profile$EE,  discount_factors, PD_cpty, cpty_LGD)
     xVA$DVA_simulated        = CalcVA(exposure_profile$NEE, discount_factors, PD_PO, PO_LGD)
   }
+  if(reg_data$cva_framework='SA-CVA'&&no_simulations) stop('Please disable the no_simulations flag when selecting the SA-CVA model')
+  
+  if(reg_data$cva_framework='SA-CVA')
+  {
+    bp = 0.0001
+    
+    cva_sensitivities = list()
+    cva_sensitivities$CS_delta = rep(0,length(cpty_spread))
+    cva_sensitivities$IR_delta = rep(0,length(spot_curve))
+    
+    for(i in 1:length(cpty_spread))
+    {
+      cpty_spread_bumped            = cpty_spread
+      cpty_spread_bumped[i]         = cpty_spread_bumped[i] + bp
+      PD_cpty_bumped                = CalcPD(cpty_spread_bumped,cpty_LGD,time_points)
+      cva_sensitivities$CS_delta[i] = (CalcVA(exposure_profile$EE, discount_factors, PD_cpty_bumped, cpty_LGD) - xVA$CVA_simulated)/bp
+    }
+
+    for(i in 1:length(spot_curve))
+    {
+      spot_curve_bumped             = spot_curve
+      spot_curve_bumped[i]          = spot_curve_bumped[i] + bp
+      discount_factors_bumped       = exp(-time_points*spot_curve_bumped)
+      exposure_profile_bumped       = CalcSimulatedExposure(discount_factors_bumped, time_points, spot_curve_bumped, CSA, trades, sim_data, reg_data$ccr_framework)   
+      cva_sensitivities$IR_delta[i] = (CalcVA(exposure_profile_bumped$EE, discount_factors_bumped, PD_cpty, cpty_LGD) - xVA$CVA_simulated)/bp
+    }
+  }
+  
+  cva_capital_charge = calcCVACapital(trades, EAD, reg_data, superv, effective_maturity, cva_sensitivities)
+  
   if(reg_data$ccr_framework=='SA-CCR')
   {
     pos_exposure = ifelse(EAD$Exposure_Tree$`Replacement Cost`$V_C+EAD$Exposure_Tree$addon<0,0,EAD$Exposure_Tree$`Replacement Cost`$V_C+EAD$Exposure_Tree$addon)
@@ -66,9 +96,9 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
     
     for(i in 1:ceiling(effective_maturity))
     { pd_aggregate = pd_aggregate + reg_data$PD_cpty * (1 - reg_data$PD_cpty)^(i - 1)}
-
+    
     xVA$CVA_SACCR            = -pos_exposure*pd_aggregate*cpty_LGD
-
+    
     pd_aggregate = 0
     
     for(i in 1:ceiling(effective_maturity))
@@ -92,5 +122,6 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
     xVA$FBA_simulated        = CalcVA(exposure_profile$NEE, discount_factors, PD_FVA)
     xVA$MVA_simulated        = xVA$FCA_simulated*2*sqrt(reg_data$mva_days/(250*maturity))*qnorm(reg_data$mva_percentile)/dnorm(0)
   }
+
   return(xVA)
 }
