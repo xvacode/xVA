@@ -65,8 +65,10 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
     bp = 0.0001
     
     cva_sensitivities = list()
-    cva_sensitivities$CS_delta = rep(0,length(cpty_spread))
-    cva_sensitivities$IR_delta = rep(0,length(spot_curve))
+    cva_sensitivities$CS_delta  = rep(0,length(cpty_spread))
+    cva_sensitivities$CS_tenors = cpty_spread$Tenors
+    cva_sensitivities$IR_delta  = rep(0,length(spot_curve))
+    cva_sensitivities$IR_tenors = spot_curve$Tenors
     
     for(i in 1:length(cpty_spread))
     {
