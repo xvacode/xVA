@@ -25,7 +25,9 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
   time_points    = GenerateTimeGrid(CSA, maturity)
   num_of_points  = length(time_points)
   
+  initial_ir_rates  = spot_rates$Rates
   spot_curve     = spot_rates$CalcInterpPoints(time_points)
+  initial_cs_rates  = credit_curve_cpty$Rates
   cpty_spread    = credit_curve_cpty$CalcInterpPoints(time_points)
   PO_spread      = credit_curve_PO$CalcInterpPoints(time_points)
   funding_spread = funding_curve$CalcInterpPoints(time_points)
@@ -58,22 +60,24 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
     xVA$CVA_simulated        = CalcVA(exposure_profile$EE,  discount_factors, PD_cpty, cpty_LGD)
     xVA$DVA_simulated        = CalcVA(exposure_profile$NEE, discount_factors, PD_PO, PO_LGD)
   }
-  if(reg_data$cva_framework='SA-CVA'&&no_simulations) stop('Please disable the no_simulations flag when selecting the SA-CVA model')
+  if(reg_data$cva_framework=='SA-CVA'&&no_simulations) stop('Please disable the no_simulations flag when selecting the SA-CVA model')
   
-  if(reg_data$cva_framework='SA-CVA')
+  if(reg_data$cva_framework=='SA-CVA')
   {
     bp = 0.0001
     
     cva_sensitivities = list()
-    cva_sensitivities$CS_delta  = rep(0,length(cpty_spread))
-    cva_sensitivities$CS_tenors = cpty_spread$Tenors
-    cva_sensitivities$IR_delta  = rep(0,length(spot_curve))
-    cva_sensitivities$IR_tenors = spot_curve$Tenors
+    cva_sensitivities$CS_delta  = rep(0,length(credit_curve_cpty$Tenors))
+    cva_sensitivities$CS_tenors = credit_curve_cpty$Tenors
+    cva_sensitivities$IR_delta  = rep(0,length(spot_rates$Tenors))
+    cva_sensitivities$IR_tenors = spot_rates$Tenors
     
-    for(i in 1:length(cpty_spread))
+    for(i in 1:length( credit_curve_cpty$Tenors))
     {
-      cpty_spread_bumped            = cpty_spread
-      cpty_spread_bumped[i]         = cpty_spread_bumped[i] + bp
+      credit_curve_cpty$Rates = initial_cs_rates
+      credit_curve_cpty$Rates[i] = credit_curve_cpty$Rates[i]+1
+      cpty_spread_bumped            = credit_curve_cpty$CalcInterpPoints(time_points)
+      cpty_spread_bumped[cpty_spread_bumped<cpty_spread] = cpty_spread
       PD_cpty_bumped                = CalcPD(cpty_spread_bumped,cpty_LGD,time_points)
       cva_sensitivities$CS_delta[i] = (CalcVA(exposure_profile$EE, discount_factors, PD_cpty_bumped, cpty_LGD) - xVA$CVA_simulated)/bp
     }
