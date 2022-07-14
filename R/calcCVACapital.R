@@ -9,12 +9,12 @@
 #' @return The CVA capital charge of the trade set
 #' @export
 #' @author Tasos Grivas <tasos@@openriskcalculator.com>
-calcCVACapital = function(trades, EAD, reg_data, , superv, effective_maturity, cva_sensitivities)
+calcCVACapital = function(trades, EAD, reg_data, superv, effective_maturity, cva_sensitivities)
 {
   rating_table = HashTable('RatingsMapping.csv',"character","numeric")
   
   reg_weight =rating_table$FindValue(reg_data$cpty_rating)
-  
+  superv_rw = superv$superv_risk_weights[superv$superv_risk_weights$Sector == reg_data$cpty_sector, ifelse(IS_IG(reg_data$cpty_rating),2,3)]
   
   if(reg_data$cva_framework=="STD-CVA")
   {
@@ -22,26 +22,47 @@ calcCVACapital = function(trades, EAD, reg_data, , superv, effective_maturity, c
     cva_capital_charge = qnorm(0.99)*sqrt(sum(0.5*reg_weight*EAD*df*effective_maturity)^2+0.75*sum((reg_weight*EAD*df*effective_maturity)^2))
   }else if(reg_data$cva_framework=="BA-CVA")
   {
-    superv_rw = superv$superv_risk_weights[superv$superv_risk_weights$Sector == reg_data$cpty_sector, ifelse(IS_IG(reg_data$cpty_rating),2,3)]
     cva_capital_charge = EAD/1.4*superv_rw*effective_maturity
   }else if(reg_data$cva_framework=="SA-CVA")
   {
-    # The assumption is being taken here that all trades belong to the same currency
+    # The (oversimplifying) assumption being taken here that all trades belong to the same currency
     ccy = unlist(unique(lapply(trades, function(x) x$Currency)))
     
     if(is_eligible_ccy(ccy))
     {
-      superv_tenors         = superv$IR_cormat_eligible_ccies[1:nrow(superv$IR_cormat_eligible_ccies)-1,1]
-      matching_indices      = findInterval(cva_sensitivities$IR_tenors, superv_tenors)
-      mapped_IR_sens        = cbind(cva_sensitivities$IR_delta, matching_indices)
-      mapped_IR_sens_summed = data.table(sum(mapped_IR_sens, by=mapped_IR_sens$matching_indices))
-      superv_tenors_indexed = data.table(cbind(superv_tenors,seq(1,length(superv_tenors))))
-      mapped_IR_sens_summed = mapped_IR_sens_summed[superv_tenors_indexed]
-      ir_charge = mapped_IR_sens_summed%*%superv$IR_cormat_eligible_ccies[,2:ncol(superv$IR_cormat_eligible_ccies)]%*%IR_RW[,2]
-    }else{
-      
-    }
+      cormat = superv$IR_cormat_eligible_ccies
+      IR_RW  = superv$IR_RW[,2]
 
+    }else{
+      cormat = superv$IR_cormat_other_ccies
+      IR_RW  = superv$IR_RW[,3]
+    }
+    
+    # IR part
+    superv_tenors         = cormat[1:nrow(cormat)-1,1]
+    matching_indices      = findInterval(cva_sensitivities$IR_tenors, superv_tenors)
+    mapped_IR_sens        = cbind(cva_sensitivities$IR_delta, matching_indices)
+    mapped_IR_sens_summed = data.table(sum(mapped_IR_sens, by=mapped_IR_sens$matching_indices))
+    superv_tenors_indexed = data.table(cbind(superv_tenors,seq(1,length(superv_tenors))))
+    mapped_IR_sens_summed = mapped_IR_sens_summed[superv_tenors_indexed]
+    
+    ir_charge = reg_data$sa_cva_multiplier*sqrt(mapped_IR_sens_summed%*%cormat[,2:ncol(cormat)]%*%mapped_IR_sens_summed%*%IR_RW)
+    
+    # CS part
+    cormat                = superv$CS_cormat_by_tenor
+    superv_tenors         = cormat[1:nrow(cormat)-1,1]
+    matching_indices      = findInterval(cva_sensitivities$CS_tenors, superv_tenors)
+    mapped_CS_sens        = cbind(cva_sensitivities$CS_delta, matching_indices)
+    mapped_CS_sens_summed = data.table(sum(mapped_CS_sens, by=mapped_CS_sens$matching_indices))
+    superv_tenors_indexed = data.table(cbind(superv_tenors,seq(1,length(superv_tenors))))
+    mapped_CS_sens_summed = mapped_CS_sens_summed[superv_tenors_indexed]
+    
+    cs_charge = reg_data$sa_cva_multiplier*sqrt(mapped_CS_sens_summed%*%cormat[,2:ncol(cormat)]%*%mapped_CS_sens_summed%*%rep(superv_rw,length(mapped_CS_sens_summed)))
+    
+    cva_capital_charge = list()    
+    cva_capital_charge$IR_charge = ir_charge
+    cva_capital_charge$CS_charge = cs_charge
+    cva_capital_charge$Total_charge = ir_charge + cs_charge
     
   }else
   {stop('cva_framework can be either "BA-CVA" or "SA-CVA" or "STD-CVA". Please correct your input')}
