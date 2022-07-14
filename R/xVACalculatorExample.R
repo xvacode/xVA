@@ -13,7 +13,7 @@ xVACalculatorExample = function()
 {
   # ccr_framework can be either "IMM" or "CEM" or "SA-CCR"
   # cva_framework can be either "BA-CVA" or "SA-CVA" or "STD-CVA"
-  reg_data = list(ccr_framework = "SA-CCR", sa_ccr_simplified = "", cva_framework = "BA-CVA", cpty_sector = "Sovereigns including central banks and multilateral development banks",
+  reg_data = list(ccr_framework = "SA-CCR", sa_ccr_simplified = "", cva_framework = "BA-CVA", sa_cva_multiplier = 1.2, cpty_sector = "Sovereigns including central banks and multilateral development banks",
                   ignore_def_charge = TRUE, PD_cpty = 0.002, PD_PO = 0.005, PD_FVA = 0.001, LGD = 0.45, return_on_capital = 0.03, cpty_rating = 'A',
                   mva_days = 10, mva_percentile = 0.99)
 
