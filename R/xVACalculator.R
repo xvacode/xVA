@@ -82,10 +82,11 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
       cva_sensitivities$CS_delta[i] = -(CalcVA(exposure_profile$EE, discount_factors, PD_cpty_bumped, cpty_LGD) - xVA$CVA_simulated)/bp
     }
 
-    for(i in 1:length(spot_curve))
+    for(i in 1:length(spot_rates$Rates))
     {
-      spot_curve_bumped             = spot_curve
-      spot_curve_bumped[i]          = spot_curve_bumped[i] + bp
+      spot_rates$Rates = initial_ir_rates
+      spot_rates$Rates[i] = spot_rates$Rates[i] + 1
+      spot_curve_bumped            = spot_rates$CalcInterpPoints(time_points)
       discount_factors_bumped       = exp(-time_points*spot_curve_bumped)
       exposure_profile_bumped       = CalcSimulatedExposure(discount_factors_bumped, time_points, spot_curve_bumped, CSA, trades, sim_data, reg_data$ccr_framework)   
       cva_sensitivities$IR_delta[i] = -(CalcVA(exposure_profile_bumped$EE, discount_factors_bumped, PD_cpty, cpty_LGD) - xVA$CVA_simulated)/bp
