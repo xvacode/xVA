@@ -3,14 +3,15 @@ Calculates Credit Risk Valuation Adjustments
 
 Calculates a number of valuation adjustments including CVA, DVA, FBA, FCA, MVA and KVA. 
 
-A two-way margin agreement has been implemented. 
+A two-way margin agreement has been implemented. For the KVA calculation three regulatory frameworks are supported: CEM, (simplified) SA-CCR, OEM and IMM. 
 
-For the KVA calculation three regulatory frameworks are supported: CEM, (simplified) SA-CCR, OEM
-	and IMM
+The probability of default is implied through the credit spreads curve. The package supports an exposure calculation based on SA-CCR which includes several trade types and a simulated path which is currently available only for IRSwaps. 
 
-The probability of default is implied through the credit spreads curve. Currently, only IRSwaps are supported.
+The latest regulatory capital charge methodologies have been implementing including BA-CVA & SA-CVA.
 
-If you want to become a contributor to the project or use this code for commercial purposes or for any other queries please contact us at info@openriskcalculator.com or visit our website www.openriskcalculator.com
+
+
+If you want to become a contributor to the project or use this code for commercial purposes or for any other queries please contact us at info@openriskcalculator.com
 
 # Donate 
 
