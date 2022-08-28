@@ -28,7 +28,7 @@ xVACalculator(
 
 \item{sim_data}{A list containing data related to the calculation of simulated exposures (for example the model parameters and the number of simulations)}
 
-\item{reg_data}{A list containing data related to the regulatory calculations (for example the 'framework' member variable can be 'IMM','SACCR','CEM')}
+\item{reg_data}{A list containing data related to the regulatory calculations (for example the 'ccr_framework' member variable can be 'IMM','SACCR','CEM')}
 
 \item{credit_curve_PO}{The credit curve of the processing organization}
 
@@ -45,7 +45,7 @@ xVACalculator(
 \item{no_simulations}{if true, no simulated exposure will be generated and the regulatory framework should be SA-CCR}
 }
 \value{
-A list containing the xVA values
+A list containing the xVA values and the cva capital charge
 }
 \description{
 Calculates the xVA values (CVA, DVA, FVA, FBA, MVA, KVA)

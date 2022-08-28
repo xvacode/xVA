@@ -9,7 +9,7 @@
 #' https://www.bis.org/basel_framework/chapter/MAR/50.htm?inforce=20230101&published=20200708
 LoadSupervisoryCVAData <- function()  {
 
-  file_names  = c('IR_cormat_other_ccies','IR_cormat_hard_ccies','CS_cormat_by_sector','CS_cormat_by_tenor','hedge_cpty_corr','superv_risk_weights','CS_ref_Sector_cormat',
+  file_names  = c('IR_cormat_other_ccies','IR_cormat_eligible_ccies','CS_cormat_by_sector','CS_cormat_by_tenor','hedge_cpty_corr','superv_risk_weights','CS_ref_Sector_cormat',
                   'CS_Sector_cpty_cormat','COMM_RW','EQ_RW','IR_RW')
   
   file_names_csv = paste0(file_names,'.csv')
@@ -17,8 +17,8 @@ LoadSupervisoryCVAData <- function()  {
   superv = list()
   
   for(i in 1:length(file_names))
-  {   
-    superv[[i]] = read.csv(file_names_csv[i],header = TRUE,stringsAsFactors = FALSE,check.names = FALSE)
+  {
+    superv[[i]] = read.csv(system.file("extdata", file_names_csv[i], package = "xVA"),header = TRUE,stringsAsFactors = FALSE,check.names = FALSE)
     if(ncol(superv[[i]])==2)
     {        superv[[i]][,2]   = as.numeric(sub("%","",superv[[i]][,2]))/100
     }else

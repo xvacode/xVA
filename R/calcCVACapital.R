@@ -1,3 +1,4 @@
+utils::globalVariables("V1")
 #' Calculates the CVA capital charge based on the standardized approach
 #' @title Calculates the CVA Capital Charge
 #' @param trades The full list of the Trade Objects
@@ -28,36 +29,38 @@ calcCVACapital = function(trades, EAD, reg_data, superv, effective_maturity, cva
     # The (oversimplifying) assumption being taken here that all trades belong to the same currency
     ccy = unlist(unique(lapply(trades, function(x) x$Currency)))
     
-    if(is_eligible_ccy(ccy))
+    if(IS_ELIGIBLE_CCY(ccy))
     {
       cormat = superv$IR_cormat_eligible_ccies
-      IR_RW  = superv$IR_RW[,2]
+      IR_RW  = superv$IR_RW[1:nrow(superv$IR_RW)-1,2]
 
     }else{
       cormat = superv$IR_cormat_other_ccies
-      IR_RW  = superv$IR_RW[,3]
+      IR_RW  = superv$IR_RW[1:nrow(superv$IR_RW)-1,3]
     }
     
     # IR part
-    superv_tenors         = cormat[1:nrow(cormat)-1,1]
+    superv_tenors         = as.numeric(cormat[1:nrow(cormat)-1,1])
     matching_indices      = findInterval(cva_sensitivities$IR_tenors, superv_tenors)
-    mapped_IR_sens        = cbind(cva_sensitivities$IR_delta, matching_indices)
-    mapped_IR_sens_summed = data.table(sum(mapped_IR_sens, by=mapped_IR_sens$matching_indices))
-    superv_tenors_indexed = data.table(cbind(superv_tenors,seq(1,length(superv_tenors))))
-    mapped_IR_sens_summed = mapped_IR_sens_summed[superv_tenors_indexed]
-    
-    ir_charge = reg_data$sa_cva_multiplier*sqrt(mapped_IR_sens_summed%*%cormat[,2:ncol(cormat)]%*%mapped_IR_sens_summed%*%IR_RW)
+    mapped_IR_sens        = data.table(cbind(cva_sensitivities$IR_delta, matching_indices))
+    mapped_IR_sens_summed = mapped_IR_sens[,sum(V1), by=matching_indices]
+    superv_tenors_indexed = data.table(superv_tenors = superv_tenors,matching_indices = seq(1,length(superv_tenors)))
+    mapped_IR_sens_summed = setkey(mapped_IR_sens_summed,"matching_indices")[setkey(superv_tenors_indexed,"matching_indices")]
+    mapped_IR_sens_summed[is.na(V1),V1:=0]
+
+    ir_charge = reg_data$sa_cva_multiplier*sqrt((mapped_IR_sens_summed$V1*IR_RW)%*%(data.matrix(cormat[1:(nrow(cormat)-1),2:(ncol(cormat)-1)])%*%(mapped_IR_sens_summed$V1*IR_RW)))
     
     # CS part
     cormat                = superv$CS_cormat_by_tenor
-    superv_tenors         = cormat[1:nrow(cormat)-1,1]
+    superv_tenors         = cormat[,1]
     matching_indices      = findInterval(cva_sensitivities$CS_tenors, superv_tenors)
-    mapped_CS_sens        = cbind(cva_sensitivities$CS_delta, matching_indices)
-    mapped_CS_sens_summed = data.table(sum(mapped_CS_sens, by=mapped_CS_sens$matching_indices))
-    superv_tenors_indexed = data.table(cbind(superv_tenors,seq(1,length(superv_tenors))))
-    mapped_CS_sens_summed = mapped_CS_sens_summed[superv_tenors_indexed]
-    
-    cs_charge = reg_data$sa_cva_multiplier*sqrt(mapped_CS_sens_summed%*%cormat[,2:ncol(cormat)]%*%mapped_CS_sens_summed%*%rep(superv_rw,length(mapped_CS_sens_summed)))
+    mapped_CS_sens        = data.table(cbind(cva_sensitivities$CS_delta, matching_indices))
+    mapped_CS_sens_summed = mapped_CS_sens[,sum(V1), by=matching_indices]
+    superv_tenors_indexed = data.table(superv_tenors = superv_tenors,matching_indices = seq(1,length(superv_tenors)))
+    mapped_CS_sens_summed = setkey(mapped_CS_sens_summed,"matching_indices")[setkey(superv_tenors_indexed,"matching_indices")]
+    mapped_CS_sens_summed[is.na(V1),V1:=0]
+
+    cs_charge = reg_data$sa_cva_multiplier*superv_rw*sqrt((mapped_CS_sens_summed$V1)%*%(data.matrix(cormat[,2:(ncol(cormat))])%*%(mapped_CS_sens_summed$V1)))
     
     cva_capital_charge = list()    
     cva_capital_charge$IR_charge = ir_charge

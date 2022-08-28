@@ -4,16 +4,27 @@
 \alias{calcCVACapital}
 \title{Calculates the CVA Capital Charge}
 \usage{
-calcCVACapital(trades, EAD, cpty_rating, effective_maturity)
+calcCVACapital(
+  trades,
+  EAD,
+  reg_data,
+  superv,
+  effective_maturity,
+  cva_sensitivities
+)
 }
 \arguments{
 \item{trades}{The full list of the Trade Objects}
 
 \item{EAD}{Exposure-at-Default}
 
-\item{cpty_rating}{the rating of the counterparty}
+\item{reg_data}{A list containing data related to the regulatory calculations}
+
+\item{superv}{A list containing supervisory data including correlations, risk weights etc}
 
 \item{effective_maturity}{The effective maturity of the trades of the netting set}
+
+\item{cva_sensitivities}{The effective maturity of the trades of the netting set}
 }
 \value{
 The CVA capital charge of the trade set

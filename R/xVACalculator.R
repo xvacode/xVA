@@ -26,7 +26,7 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
   num_of_points  = length(time_points)
   
   initial_ir_rates  = spot_rates$Rates
-  spot_curve     = spot_rates$CalcInterpPoints(time_points)
+  spot_curve     = spot_rates$CalcInterpPoints(time_points,"linear")
   initial_cs_rates  = credit_curve_cpty$Rates
   cpty_spread    = credit_curve_cpty$CalcInterpPoints(time_points)
   PO_spread      = credit_curve_PO$CalcInterpPoints(time_points)
@@ -75,7 +75,7 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
     for(i in 1:length( credit_curve_cpty$Tenors))
     {
       credit_curve_cpty$Rates = initial_cs_rates
-      credit_curve_cpty$Rates[i] = credit_curve_cpty$Rates[i]+100
+      credit_curve_cpty$Rates[i] = credit_curve_cpty$Rates[i]+1
       cpty_spread_bumped            = credit_curve_cpty$CalcInterpPoints(time_points)
       PD_cpty_bumped                = CalcPD(cpty_spread_bumped,cpty_LGD,time_points)
       PD_cpty_bumped[PD_cpty_bumped<PD_cpty] = PD_cpty[PD_cpty_bumped<PD_cpty]
@@ -85,15 +85,15 @@ xVACalculator = function(trades, CSA, collateral, sim_data, reg_data, credit_cur
     for(i in 1:length(spot_rates$Rates))
     {
       spot_rates$Rates = initial_ir_rates
-      spot_rates$Rates[i] = spot_rates$Rates[i] + 1
-      spot_curve_bumped            = spot_rates$CalcInterpPoints(time_points)
+      spot_rates$Rates[i] = spot_rates$Rates[i] + bp
+      spot_curve_bumped            = spot_rates$CalcInterpPoints(time_points,"linear")
       discount_factors_bumped       = exp(-time_points*spot_curve_bumped)
       exposure_profile_bumped       = CalcSimulatedExposure(discount_factors_bumped, time_points, spot_curve_bumped, CSA, trades, sim_data, reg_data$ccr_framework)   
       cva_sensitivities$IR_delta[i] = -(CalcVA(exposure_profile_bumped$EE, discount_factors_bumped, PD_cpty, cpty_LGD) - xVA$CVA_simulated)/bp
     }
   }
   
-  cva_capital_charge = calcCVACapital(trades, EAD, reg_data, superv, effective_maturity, cva_sensitivities)
+  xVA$cva_capital_charge = calcCVACapital(trades, EAD, reg_data, superv, effective_maturity, cva_sensitivities)
   
   if(reg_data$ccr_framework=='SA-CCR')
   {

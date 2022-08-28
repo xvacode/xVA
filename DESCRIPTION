@@ -1,8 +1,8 @@
 Package: xVA
 Type: Package
 Title: Calculates Credit Risk Valuation Adjustments
-Version: 1.0
-Date: 2022-03-16
+Version: 1.1
+Date: 2022-08-27
 Author: Tasos Grivas
 Maintainer: Tasos Grivas <tasos@openriskcalculator.com>
 Description: Calculates a number of valuation adjustments including CVA, DVA,
@@ -10,19 +10,21 @@ Description: Calculates a number of valuation adjustments including CVA, DVA,
     the KVA calculation three regulatory frameworks are supported: CEM, (simplified) SA-CCR, OEM
 	and IMM. The probability of default is implied through the credit spreads curve.
     The package supports an exposure calculation based on SA-CCR which includes several trade types
-    and a simulated path which is currently available only for IRSwaps.
+    and a simulated path which is currently available only for IRSwaps. The latest regulatory capital charge methodologies
+    have been implementing including BA-CVA & SA-CVA.
 License: GPL-3
-Imports: methods, SACCR, Trading
+Imports: methods, SACCR, Trading, data.table
 URL: https://openriskcalculator.com/
 Collate: 'CalcNGR.R' 'CalcPD.R' 'CalcSimulatedExposure.R' 'CalcVA.R'
-        'GenerateTimeGrid.R' 'calcCVACapital.R' 'calcDefCapital.R'
+        'GenerateTimeGrid.R' 'calcDefCapital.R'
         'calcEADRegulatory.R' 'calcEffectiveMaturity.R' 'calcKVA.R'
-        'xVACalculator.R' 'xVACalculatorExample.R' 'onLoad.R'
+        'xVACalculator.R' 'xVACalculatorExample.R' 'onLoad.R' 'IS_ELIGIBLE_CCY.R'
+		'IS_IG.R' 'LoadSupervisoryCVAData.R' 'calcCVACapital.R'
 NeedsCompilation: no
 RoxygenNote: 7.1.1
 Repository: CRAN
 Repository/R-Forge/Project: ccr
 Repository/R-Forge/Revision: 59
-Repository/R-Forge/DateTimeStamp: 2022-03-16 17:40:19
-Date/Publication: 2022-03-16 18:20:02 UTC
-Packaged: 2022-03-16 17:51:08 UTC; rforge
+Repository/R-Forge/DateTimeStamp: 2022-08-27 17:40:19
+Date/Publication: 2022-08-27 18:20:02 UTC
+Packaged: 2022-08-27 17:51:08 UTC; rforge

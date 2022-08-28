@@ -20,7 +20,7 @@ calcKVA = function(CSA, collateral, trades, reg_data, time_points, EAD, effectiv
   {def_capital_charge = calcDefCapital(trades,EAD, reg_data, effective_maturity)}
   
 
-  cva_capital_charge = calcCVACapital(trades, EAD, reg_data$cpty_rating, effective_maturity)
+  #  cva_capital_charge = calcCVACapital(trades, EAD, reg_data$cpty_rating, effective_maturity)
 
-  KVA = -(def_capital_charge+cva_capital_charge)*0.5*sqrt(effective_maturity)*reg_data$return_on_capital
+  #  KVA = -(def_capital_charge+cva_capital_charge)*0.5*sqrt(effective_maturity)*reg_data$return_on_capital
 }
